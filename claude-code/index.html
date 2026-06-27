@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claude Code 国内不限速使用方案｜高并发编程通道 - KingFlow</title>
+<meta name="description" content="Claude Code 国内不限速使用方案：KingFlow 高并发编程通道，5 路并发、约官方 2 折成本，支持大规模代码重构、仓库扫描与长时间 Agent 任务。">
+<link rel="canonical" href="https://kingflowapi.github.io/claude-code/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Claude Code 国内不限速使用方案｜高并发编程通道 - KingFlow">
+<meta property="og:description" content="Claude Code 国内不限速使用方案：KingFlow 高并发编程通道，5 路并发、约官方 2 折成本，支持大规模代码重构、仓库扫描与长时间 Agent 任务。">
+<meta property="og:url" content="https://kingflowapi.github.io/claude-code/">
+<meta property="og:site_name" content="KingFlow">
+<meta property="og:image" content="https://www.kingflow.ai/logo.png">
+<meta name="twitter:card" content="summary">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="/">King<span>Flow</span></a>
+  <nav class="topnav"><a href="/">首页</a>
+<a href="/claude-api/">Claude 接入指南</a>
+<a href="/claude-code/" class="active">Claude Code 方案</a>
+<a href="/claude-proxy/">Claude 调用教程</a>
+<a href="/ai-gateway/">多模型网关</a>
+<a href="/codex-cli/">Codex 实战</a></nav>
+  <a class="cta" href="https://www.kingflow.ai" rel="noopener">前往官网 →</a>
+</header>
+<main>
+<article class="post">
+<h1>Claude Code 国内不限速使用方案：KingFlow 高并发编程通道</h1>
+<div align="center">
+
+[![官网](https://img.shields.io/badge/官网-www.kingflow.ai-2563eb?style=for-the-badge)](https://www.kingflow.ai)
+[![并发](https://img.shields.io/badge/并发-5路全开-16a34a?style=for-the-badge)](https://www.kingflow.ai)
+
+</div>
+
+<p>Claude Code 是目前最能打的终端 AI 编程工具——它能读整个仓库、按你的确认改源码、跑命令。但在国内，它有两个隐形门槛：<strong>连不上官方、并发被卡</strong>。这篇讲怎么用 KingFlow 给 Claude Code 配一条<strong>高并发、不限速</strong>的国内通道。</p>
+<h2>重度编程到底卡在哪</h2>
+<p>做大规模重构、仓库级扫描、长时间 Agent 任务时，你会发现瓶颈不是模型智商，而是：</p>
+<ul>
+<li><strong>官方直连不稳</strong>：跨境链路一抖，长任务直接中断重来；</li>
+<li><strong>并发受限</strong>：多线程高频调用容易被限速，扫一遍大仓库慢得难受；</li>
+<li><strong>成本不透明</strong>：按量计费下，重度使用一个月账单很吓人。</li>
+</ul>
+<h2>KingFlow 编程通道：为 Claude Code 重度场景设计</h2>
+<p>针对上面这些痛点，KingFlow 提供面向编程的高配额通道，核心是三点：<strong>稳、快、便宜</strong>。</p>
+<table>
+<thead>
+<tr>
+<th align="left">指标</th>
+<th align="left">规格</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">计费倍率</td>
+<td align="left"><strong>1.0</strong>（不虚标 Token）</td>
+</tr>
+<tr>
+<td align="left">并发</td>
+<td align="left"><strong>5 路全开</strong>，多线程高频调用不限速</td>
+</tr>
+<tr>
+<td align="left">配额</td>
+<td align="left">高额度包月，适合重构 / 扫描 / Agent</td>
+</tr>
+<tr>
+<td align="left">模型</td>
+<td align="left"><code>claude-opus-4-8</code> / <code>claude-sonnet-4-6</code></td>
+</tr>
+<tr>
+<td align="left">成本</td>
+<td align="left">约官方价格的 <strong>2 折</strong></td>
+</tr>
+</tbody>
+</table>
+<p>号池为自有订阅，<strong>完整模型能力、不阉割、不魔改</strong>。</p>
+<h2>接入只要两步</h2>
+<p><strong>第一步 · 设环境变量</strong>（写进 <code>~/.zshrc</code> 或 <code>~/.bashrc</code>）：</p>
+<pre><code class="language-bash">export ANTHROPIC_BASE_URL=&quot;https://www.kingflow.ai&quot;
+export ANTHROPIC_AUTH_TOKEN=&quot;你的-API-Key&quot;
+</code></pre>
+<p><strong>第二步 · 装好就用</strong>：</p>
+<pre><code class="language-bash">npm install -g @anthropic-ai/claude-code
+claude
+</code></pre>
+<p>不仅 Claude Code，VS Code、Cursor 等吃 Anthropic 接口的工具同样一行配置接入。</p>
+<h2>三个让 Claude Code 更顺手的习惯</h2>
+<ol>
+<li><strong>先读后改</strong>：让它"先扫描结构、列出要动的文件，再动手"，别一上来就改。</li>
+<li><strong>小步快跑</strong>：一次只让它做一件事（修一个 bug / 加一个点），好回滚。</li>
+<li><strong>Git 当检查点</strong>：改动前后各 commit 一次，出问题随时退。</li>
+</ol>
+<h2>为什么不自己搭代理</h2>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>KingFlow 通道</th>
+<th>自建代理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>国内直连</td>
+<td>✅</td>
+<td>⚠️ 需运维</td>
+</tr>
+<tr>
+<td>并发</td>
+<td>5 路全开</td>
+<td>看线路</td>
+</tr>
+<tr>
+<td>稳定性</td>
+<td>多线路 + 自动切换</td>
+<td>不可控</td>
+</tr>
+<tr>
+<td>成本</td>
+<td>约官方 2 折</td>
+<td>隐性成本高</td>
+</tr>
+<tr>
+<td>模型更新</td>
+<td>自动同步</td>
+<td>手动</td>
+</tr>
+</tbody>
+</table>
+<p>除非你本来就有成熟的跨境网络团队，否则中转通道性价比明显更高。</p>
+<h2>小结</h2>
+<p>让 Claude Code 在国内跑得又稳又快，关键是给它一条对的通道。<strong>KingFlow（https://www.kingflow.ai）</strong> 的高并发编程通道——5 路并发、约 2 折成本、一行配置——值得重度编程的你试一试。</p>
+<blockquote>
+<p>🚀 开始使用：https://www.kingflow.ai</p>
+</blockquote>
+</article>
+</main>
+<footer class="site-footer">
+  <p><strong>KingFlow</strong> · 国内直连、稳定低延迟的 Claude / GPT API 中转平台</p>
+  <p>官网：<a href="https://www.kingflow.ai" rel="noopener">www.kingflow.ai</a> ｜ 支持 Claude Code · OpenAI Codex · 全系 Claude / GPT 模型</p>
+  <p class="muted">© 2026 KingFlow. 本站为 KingFlow 中转方案与配置教程合集。</p>
+</footer>
+</body>
+</html>

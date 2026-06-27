@@ -1,0 +1,44 @@
+{
+  "base": "https://kingflowapi.github.io",
+  "site": "KingFlow",
+  "kf": "https://www.kingflow.ai",
+  "google_site_verification": "",
+  "pages": [
+    {
+      "slug": "",
+      "nav": "首页",
+      "title": "KingFlow｜国内 Claude / GPT API 加速中转平台",
+      "desc": "KingFlow 国内直连、低延迟的 AI API 加速中转，支持 Claude Code、OpenAI Codex 与 GPT/Claude/Gemini 多模型，一行配置即用。接入指南与配置教程合集。"
+    },
+    {
+      "slug": "claude-api",
+      "nav": "Claude 接入指南",
+      "title": "Claude API 国内加速接入指南｜免代理直连 - KingFlow",
+      "desc": "Claude API 国内加速接入指南：用 KingFlow 实现免代理直连、低延迟，一行配置接入 Claude Code 与全系 Claude 模型（Opus 4.8/Sonnet 4.6/Haiku 4.5）。"
+    },
+    {
+      "slug": "claude-code",
+      "nav": "Claude Code 方案",
+      "title": "Claude Code 国内不限速使用方案｜高并发编程通道 - KingFlow",
+      "desc": "Claude Code 国内不限速使用方案：KingFlow 高并发编程通道，5 路并发、约官方 2 折成本，支持大规模代码重构、仓库扫描与长时间 Agent 任务。"
+    },
+    {
+      "slug": "claude-proxy",
+      "nav": "Claude 调用教程",
+      "title": "Claude API 国内调用完整教程｜注册到接入一步到位 - KingFlow",
+      "desc": "Claude API 国内调用完整教程：从注册拿 Key 到接入 KingFlow 中转，兼容 Anthropic 与 OpenAI 格式，含接口差异对比与按场景模型选型。"
+    },
+    {
+      "slug": "ai-gateway",
+      "nav": "多模型网关",
+      "title": "多模型 API 网关方案｜GPT/Claude/Gemini 统一接入 - KingFlow",
+      "desc": "多模型 API 网关方案：用 KingFlow 统一接入 GPT、Claude、Gemini，一套 Key、国内低延迟、智能路由与故障切换，多模型项目的务实底座。"
+    },
+    {
+      "slug": "codex-cli",
+      "nav": "Codex 实战",
+      "title": "Codex CLI 接入国内中转实战｜KingFlow 配置与避坑 - KingFlow",
+      "desc": "OpenAI Codex CLI 接入国内中转 API 实战：KingFlow 配置 auth.json/config.toml、VS Code 插件与 401/超时/model not found 等 6 个常见坑排查。"
+    }
+  ]
+}

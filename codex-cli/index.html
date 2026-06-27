@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Codex CLI 接入国内中转实战｜KingFlow 配置与避坑 - KingFlow</title>
+<meta name="description" content="OpenAI Codex CLI 接入国内中转 API 实战：KingFlow 配置 auth.json/config.toml、VS Code 插件与 401/超时/model not found 等 6 个常见坑排查。">
+<link rel="canonical" href="https://kingflowapi.github.io/codex-cli/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Codex CLI 接入国内中转实战｜KingFlow 配置与避坑 - KingFlow">
+<meta property="og:description" content="OpenAI Codex CLI 接入国内中转 API 实战：KingFlow 配置 auth.json/config.toml、VS Code 插件与 401/超时/model not found 等 6 个常见坑排查。">
+<meta property="og:url" content="https://kingflowapi.github.io/codex-cli/">
+<meta property="og:site_name" content="KingFlow">
+<meta property="og:image" content="https://www.kingflow.ai/logo.png">
+<meta name="twitter:card" content="summary">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="/">King<span>Flow</span></a>
+  <nav class="topnav"><a href="/">首页</a>
+<a href="/claude-api/">Claude 接入指南</a>
+<a href="/claude-code/">Claude Code 方案</a>
+<a href="/claude-proxy/">Claude 调用教程</a>
+<a href="/ai-gateway/">多模型网关</a>
+<a href="/codex-cli/" class="active">Codex 实战</a></nav>
+  <a class="cta" href="https://www.kingflow.ai" rel="noopener">前往官网 →</a>
+</header>
+<main>
+<article class="post">
+<h1>Codex CLI 接入国内中转 API 实战：KingFlow 配置与避坑</h1>
+<div align="center">
+
+[![官网](https://img.shields.io/badge/官网-www.kingflow.ai-2563eb?style=for-the-badge)](https://www.kingflow.ai)
+[![Codex](https://img.shields.io/badge/工具-OpenAI%20Codex-16a34a?style=for-the-badge)](https://www.kingflow.ai)
+
+</div>
+
+<p>OpenAI 的 <strong>Codex CLI</strong> 是个能直接读代码、改文件、跑命令的终端编程助手。但它默认连官方，国内用起来网络是个坎。这篇用最短路径把它接到 <strong>KingFlow</strong> 中转上，并把新手最容易踩的坑一次说清。</p>
+<h2>准备工作</h2>
+<ul>
+<li>Node.js <strong>22+</strong>、npm <strong>10+</strong></li>
+<li>一个 KingFlow 账户和 API Key（官网 https://www.kingflow.ai 注册获取）</li>
+</ul>
+<blockquote>
+<p>Windows 用户：官方对 Windows 支持偏实验性，更稳的是 WSL 环境。</p>
+</blockquote>
+<h2>一、安装 Codex CLI</h2>
+<pre><code class="language-bash"># macOS / Linux
+npm install -g @openai/codex
+codex --version
+</code></pre>
+<p>Windows 在 CMD / PowerShell 执行同样的 <code>npm install -g @openai/codex</code>；Linux 若报权限错误前面加 <code>sudo</code>。</p>
+<h2>二、把 KingFlow 配成 Codex 的接口</h2>
+<p>Codex 读用户目录下的 <code>~/.codex/</code>（Windows 同理）。需要两个文件：</p>
+<p><strong><code>~/.codex/auth.json</code></strong>（Key 换成你的）：</p>
+<pre><code class="language-json">{&quot;OPENAI_API_KEY&quot;: &quot;sk-xxx&quot;}
+</code></pre>
+<p><strong><code>~/.codex/config.toml</code></strong>：</p>
+<pre><code class="language-toml">model_provider = &quot;kingflow&quot;
+model = &quot;gpt-5-codex&quot;
+model_reasoning_effort = &quot;high&quot;
+disable_response_storage = true
+preferred_auth_method = &quot;apikey&quot;
+
+[model_providers.kingflow]
+name = &quot;kingflow&quot;
+base_url = &quot;https://www.kingflow.ai/v1&quot;
+wire_api = &quot;responses&quot;
+</code></pre>
+<p>macOS / Linux 快速创建：</p>
+<pre><code class="language-bash">mkdir -p ~/.codex
+touch ~/.codex/auth.json ~/.codex/config.toml
+</code></pre>
+<p>⚠️ 改完<strong>一定要重启终端</strong>，配置才生效。</p>
+<h2>三、跑起来</h2>
+<pre><code class="language-bash">cd your-project-folder
+codex
+# 或直接带任务：
+codex &quot;先扫描这个仓库结构，列出你打算改的文件&quot;
+</code></pre>
+<p>交互界面里输入 <code>/</code> 打开命令菜单（<code>/model</code> 切模型、<code>/new</code> 开新会话、<code>/status</code> 看状态），输入 <code>!</code> 可直接跑终端命令（如 <code>!git status</code>）。配完 <code>.codex</code> 后，VS Code 装 codex 插件即可共用同一套配置。</p>
+<h2>四、最容易踩的 6 个坑</h2>
+<p><strong>1. <code>codex: command not found</code></strong>
+npm 全局路径没进 PATH，或没装成功。先 <code>codex --version</code> 验证，再重装。</p>
+<p><strong>2. 配了 Key 仍报 401</strong>
+确认 <code>auth.json</code> 是 <code>{"OPENAI_API_KEY": "sk-xxx"}</code>，且<strong>重启了终端</strong>。</p>
+<p><strong>3. 一直超时 / 连不上</strong>
+检查 <code>base_url</code> 是否完全等于 <code>https://www.kingflow.ai/v1</code>；公司/校园网可能要放行域名。</p>
+<p><strong>4. <code>model not found</code></strong>
+用 KingFlow 实际可用的模型名，名字不匹配会直接失败。</p>
+<p><strong>5. <code>config.toml</code> 不生效</strong>
+最常见——<code>model_provider = "kingflow"</code> 和 <code>[model_providers.kingflow]</code> <strong>段名必须一致</strong>；以及忘了重启终端。</p>
+<p><strong>6. Windows 找不到 <code>.codex</code> 文件夹</strong>
+资源管理器里打开"显示隐藏的项目"，<code>.codex</code> 是隐藏目录。</p>
+<h2>五、升级</h2>
+<pre><code class="language-bash">npm i -g @openai/codex@latest
+</code></pre>
+<h2>小结</h2>
+<p>把 Codex CLI 接到国内中转，核心就两件事：<code>auth.json</code> 放 Key、<code>config.toml</code> 写对 <code>base_url</code> 和一致的 provider 名。用 <strong>KingFlow（https://www.kingflow.ai）</strong> 做这层接口，国内直连、低延迟、按量计费，配好就能让 Codex 在你日常开发里干活。</p>
+<blockquote>
+<p>🚀 立即接入：https://www.kingflow.ai</p>
+</blockquote>
+</article>
+</main>
+<footer class="site-footer">
+  <p><strong>KingFlow</strong> · 国内直连、稳定低延迟的 Claude / GPT API 中转平台</p>
+  <p>官网：<a href="https://www.kingflow.ai" rel="noopener">www.kingflow.ai</a> ｜ 支持 Claude Code · OpenAI Codex · 全系 Claude / GPT 模型</p>
+  <p class="muted">© 2026 KingFlow. 本站为 KingFlow 中转方案与配置教程合集。</p>
+</footer>
+</body>
+</html>

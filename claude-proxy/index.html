@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claude API 国内调用完整教程｜注册到接入一步到位 - KingFlow</title>
+<meta name="description" content="Claude API 国内调用完整教程：从注册拿 Key 到接入 KingFlow 中转，兼容 Anthropic 与 OpenAI 格式，含接口差异对比与按场景模型选型。">
+<link rel="canonical" href="https://kingflowapi.github.io/claude-proxy/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Claude API 国内调用完整教程｜注册到接入一步到位 - KingFlow">
+<meta property="og:description" content="Claude API 国内调用完整教程：从注册拿 Key 到接入 KingFlow 中转，兼容 Anthropic 与 OpenAI 格式，含接口差异对比与按场景模型选型。">
+<meta property="og:url" content="https://kingflowapi.github.io/claude-proxy/">
+<meta property="og:site_name" content="KingFlow">
+<meta property="og:image" content="https://www.kingflow.ai/logo.png">
+<meta name="twitter:card" content="summary">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="/">King<span>Flow</span></a>
+  <nav class="topnav"><a href="/">首页</a>
+<a href="/claude-api/">Claude 接入指南</a>
+<a href="/claude-code/">Claude Code 方案</a>
+<a href="/claude-proxy/" class="active">Claude 调用教程</a>
+<a href="/ai-gateway/">多模型网关</a>
+<a href="/codex-cli/">Codex 实战</a></nav>
+  <a class="cta" href="https://www.kingflow.ai" rel="noopener">前往官网 →</a>
+</header>
+<main>
+<article class="post">
+<h1>Claude API 国内调用完整教程：从注册到接入 KingFlow 一步到位</h1>
+<div align="center">
+
+[![官网](https://img.shields.io/badge/官网-www.kingflow.ai-2563eb?style=for-the-badge)](https://www.kingflow.ai)
+
+</div>
+
+<p>很多人第一次想在国内项目里用 Claude，卡在第一步就放弃了：官网打不开、验证码收不到、API 连不通。这篇教程把整条路走通——<strong>用 KingFlow 中转，让 Claude API 在国内像调本地接口一样顺。</strong></p>
+<h2>一、为什么要走中转，而不是直连官方</h2>
+<p>Anthropic 官方 API 在大陆<strong>不可直连</strong>，这是事实层面的限制。直连会遇到：注册环节验证码收不到、请求超时、即便偶尔通了也慢且断。所以国内开发 Claude 应用，<strong>中转是绕不开的第一步</strong>。</p>
+<p>中转的本质很简单——一台国内可达的服务器，替你把请求转给官方再把结果带回来：</p>
+<pre><code>你的程序 → KingFlow(www.kingflow.ai) → Claude 官方 → 结果回传
+</code></pre>
+<p>好处是：不用科学上网、不用海外手机号、不用改业务逻辑，只换一个地址。</p>
+<h2>二、三种方案对比，选哪个</h2>
+<table>
+<thead>
+<tr>
+<th>方案</th>
+<th>优点</th>
+<th>缺点</th>
+<th>适合</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>自建反代（租 VPS）</td>
+<td>可控</td>
+<td>贵、要运维</td>
+<td>有网络团队的企业</td>
+</tr>
+<tr>
+<td>免费镜像站</td>
+<td>零成本</td>
+<td>不稳、有隐私风险</td>
+<td>临时试玩</td>
+</tr>
+<tr>
+<td>商业中转（KingFlow）</td>
+<td>稳定、快、合规</td>
+<td>需注册额度</td>
+<td>开发者 / 企业首选</td>
+</tr>
+</tbody>
+</table>
+<h2>三、KingFlow 接入实操</h2>
+<h3>1. 注册拿 Key</h3>
+<p>访问官网 https://www.kingflow.ai，邮箱注册登录，在控制台拿到你的 API Key。新用户通常有试用额度。</p>
+<h3>2. Claude Code 接入</h3>
+<pre><code class="language-bash">export ANTHROPIC_BASE_URL=&quot;https://www.kingflow.ai&quot;
+export ANTHROPIC_AUTH_TOKEN=&quot;sk-xxx&quot;
+npm install -g @anthropic-ai/claude-code
+claude
+</code></pre>
+<h3>3. 代码里调用（兼容官方两种格式）</h3>
+<p>KingFlow 同时兼容 Anthropic 原生格式和 OpenAI 格式，按需选：</p>
+<ul>
+<li>Anthropic 格式：<code>POST https://www.kingflow.ai/v1/messages</code></li>
+<li>OpenAI 格式：<code>POST https://www.kingflow.ai/v1/chat/completions</code></li>
+</ul>
+<p><strong>Anthropic 格式请求示例</strong>（注意 <code>max_tokens</code> 必填）：</p>
+<pre><code class="language-json">{
+  &quot;model&quot;: &quot;claude-sonnet-4-6&quot;,
+  &quot;max_tokens&quot;: 1024,
+  &quot;messages&quot;: [
+    { &quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;你好&quot; }
+  ]
+}
+</code></pre>
+<h2>四、Claude 与 OpenAI 接口的关键差异</h2>
+<p>两边都用 JSON，但不通用，迁移时注意：</p>
+<table>
+<thead>
+<tr>
+<th>项</th>
+<th>OpenAI</th>
+<th>Claude</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回复结构</td>
+<td><code>choices</code> 数组</td>
+<td>顶层 <code>content</code> 数组</td>
+</tr>
+<tr>
+<td>内容取值</td>
+<td><code>choices[0].message.content</code></td>
+<td><code>content[0].text</code></td>
+</tr>
+<tr>
+<td>停止标识</td>
+<td><code>finish_reason</code></td>
+<td><code>stop_reason</code></td>
+</tr>
+<tr>
+<td>max_tokens</td>
+<td>可选</td>
+<td><strong>必填</strong></td>
+</tr>
+</tbody>
+</table>
+<p>流式响应、函数调用、系统提示词结构上两者也不一致，所以不能直接互换 SDK，但 KingFlow 两种格式都支持，按工具要求选即可。</p>
+<h2>五、按场景选模型</h2>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>推荐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>客服 / 助手</td>
+<td><code>claude-haiku-4-5</code>（快、省）</td>
+</tr>
+<tr>
+<td>文档总结</td>
+<td><code>claude-sonnet-4-6</code>（准、稳）</td>
+</tr>
+<tr>
+<td>深度写作 / 推理</td>
+<td><code>claude-opus-4-8</code>（最强）</td>
+</tr>
+<tr>
+<td>代码 / Agent</td>
+<td><code>claude-sonnet-4-6</code> + tool use</td>
+</tr>
+</tbody>
+</table>
+<h2>六、官方 vs 中转，一张表收尾</h2>
+<table>
+<thead>
+<tr>
+<th>对比</th>
+<th>官方 API</th>
+<th>KingFlow</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>国内直连</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>注册门槛</td>
+<td>高</td>
+<td>邮箱即可</td>
+</tr>
+<tr>
+<td>速度</td>
+<td>慢</td>
+<td>快</td>
+</tr>
+<tr>
+<td>接口兼容</td>
+<td>标准</td>
+<td>完全一致</td>
+</tr>
+</tbody>
+</table>
+<p>国内调用 Claude，最省事的路径就是 <strong>KingFlow（https://www.kingflow.ai）</strong>：注册、配置、调用，一步到位。</p>
+<blockquote>
+<p>🚀 立即接入：https://www.kingflow.ai</p>
+</blockquote>
+</article>
+</main>
+<footer class="site-footer">
+  <p><strong>KingFlow</strong> · 国内直连、稳定低延迟的 Claude / GPT API 中转平台</p>
+  <p>官网：<a href="https://www.kingflow.ai" rel="noopener">www.kingflow.ai</a> ｜ 支持 Claude Code · OpenAI Codex · 全系 Claude / GPT 模型</p>
+  <p class="muted">© 2026 KingFlow. 本站为 KingFlow 中转方案与配置教程合集。</p>
+</footer>
+</body>
+</html>
