@@ -57,6 +57,12 @@
       "nav": "Continue接入笔记",
       "title": "Continue + VS Code接入国内AI中转API笔记（倍率透明）| KingFlow",
       "desc": "个人开发实测：Continue + VS Code + codex 接入 KingFlow 中转，倍率透明、模型保真、访问稳定，附 Continue/codex 配置与 token 用量对账方法。"
+    },
+    {
+      "slug": "claude-haiku-price",
+      "nav": "Haiku 4.5价格",
+      "title": "Claude Haiku 4.5 Token价格与中转站成本核算（2026）| KingFlow",
+      "desc": "Claude Haiku 4.5 是什么定位？通过 KingFlow 调用的 Token 成本怎么算？对比 Opus 4.8/Sonnet 4.6 取舍，三类高频用法 + 接入示例，成本可控。"
     }
   ]
 }
