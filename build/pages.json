@@ -51,6 +51,12 @@
       "nav": "不用梯子调Claude",
       "title": "国内不用梯子调用Claude·KingFlow直连实战配置 | KingFlow",
       "desc": "为什么 VPS 代理调 Claude 容易被封？KingFlow 合规转发 + 住宅IP 池实现国内直连，双协议配置实战、多模型切换，告别梯子与封号。"
+    },
+    {
+      "slug": "continue-vscode-api",
+      "nav": "Continue接入笔记",
+      "title": "Continue + VS Code接入国内AI中转API笔记（倍率透明）| KingFlow",
+      "desc": "个人开发实测：Continue + VS Code + codex 接入 KingFlow 中转，倍率透明、模型保真、访问稳定，附 Continue/codex 配置与 token 用量对账方法。"
     }
   ]
 }
