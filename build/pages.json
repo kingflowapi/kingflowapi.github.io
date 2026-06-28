@@ -63,6 +63,12 @@
       "nav": "Haiku 4.5价格",
       "title": "Claude Haiku 4.5 Token价格与中转站成本核算（2026）| KingFlow",
       "desc": "Claude Haiku 4.5 是什么定位？通过 KingFlow 调用的 Token 成本怎么算？对比 Opus 4.8/Sonnet 4.6 取舍，三类高频用法 + 接入示例，成本可控。"
+    },
+    {
+      "slug": "cursor-claude-code",
+      "nav": "Cursor+Claude Code",
+      "title": "Cursor + Claude Code中转接入·后台可查倍率省钱方案 | KingFlow",
+      "desc": "Cursor 写代码 + Claude Code 跑任务，官方 API 烧钱难算账？KingFlow 倍率透明、后台可查用量，双工具配置与模型分工，先测后充更省钱。"
     }
   ]
 }
