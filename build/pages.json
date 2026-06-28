@@ -45,6 +45,12 @@
       "nav": "中转站选型实测",
       "title": "国内大模型API中转站怎么选？9条避坑清单+实测 | KingFlow",
       "desc": "踩坑实录 + 选型 checklist：从个人中转跑路到自建翻车，9 条避坑清单与 KingFlow 实测数据（TTFT、并发成功率、住宅IP直连），5 分钟接入。"
+    },
+    {
+      "slug": "claude-no-vpn",
+      "nav": "不用梯子调Claude",
+      "title": "国内不用梯子调用Claude·KingFlow直连实战配置 | KingFlow",
+      "desc": "为什么 VPS 代理调 Claude 容易被封？KingFlow 合规转发 + 住宅IP 池实现国内直连，双协议配置实战、多模型切换，告别梯子与封号。"
     }
   ]
 }
