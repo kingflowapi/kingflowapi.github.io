@@ -39,6 +39,12 @@
       "nav": "Codex 实战",
       "title": "Codex CLI 接入国内中转实战｜KingFlow 配置与避坑 - KingFlow",
       "desc": "OpenAI Codex CLI 接入国内中转 API 实战：KingFlow 配置 auth.json/config.toml、VS Code 插件与 401/超时/model not found 等 6 个常见坑排查。"
+    },
+    {
+      "slug": "llm-proxy-selection",
+      "nav": "中转站选型实测",
+      "title": "国内大模型API中转站怎么选？9条避坑清单+实测 | KingFlow",
+      "desc": "踩坑实录 + 选型 checklist：从个人中转跑路到自建翻车，9 条避坑清单与 KingFlow 实测数据（TTFT、并发成功率、住宅IP直连），5 分钟接入。"
     }
   ]
 }
