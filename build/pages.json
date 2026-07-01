@@ -111,6 +111,12 @@
       "nav": "ChatBox/Cherry接入",
       "title": "ChatBox/Cherry Studio接入Claude中转实战推荐 | KingFlow",
       "desc": "ChatBox 与 Cherry Studio 接入 KingFlow 中转的详细步骤：API 类型、Base URL、添加多模型、知识库、多模型同时对比，以及 401/模型不出现/连不上的排查。"
+    },
+    {
+      "slug": "claude-api-for-teams",
+      "nav": "企业接入方案",
+      "title": "企业团队接入Claude API中转经验·对账配额发票 | KingFlow",
+      "desc": "给技术负责人的 Claude API 中转企业落地清单：采购合规（开票/对公/主体/SLA）、统一网关子 Key 分业务、配额与成本治理、多模型分层、上线 checklist。"
     }
   ]
 }
