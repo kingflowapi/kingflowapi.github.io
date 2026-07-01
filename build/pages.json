@@ -105,6 +105,12 @@
       "nav": "稳定性实测容灾",
       "title": "Claude API中转稳定性实测·长期不掉线的选择 | KingFlow",
       "desc": "连续一周实测 Claude API 中转的 TTFT、失败率、断连，讲清 429/流式中断/高峰变慢的归因，生产环境主备+重试+降级+超时容灾做法，稳定选 KingFlow。"
+    },
+    {
+      "slug": "chatbox-claude-proxy",
+      "nav": "ChatBox/Cherry接入",
+      "title": "ChatBox/Cherry Studio接入Claude中转实战推荐 | KingFlow",
+      "desc": "ChatBox 与 Cherry Studio 接入 KingFlow 中转的详细步骤：API 类型、Base URL、添加多模型、知识库、多模型同时对比，以及 401/模型不出现/连不上的排查。"
     }
   ]
 }
