@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="google-site-verification" content="DyeogvFVdyZis1Eh2FSM3D7FKZ2gQSHrVDROSUnAWtQ">
+<title>Claude API中转稳定性实测·长期不掉线的选择 | KingFlow</title>
+<meta name="description" content="连续一周实测 Claude API 中转的 TTFT、失败率、断连，讲清 429/流式中断/高峰变慢的归因，生产环境主备+重试+降级+超时容灾做法，稳定选 KingFlow。">
+<link rel="canonical" href="https://kingflowapi.github.io/claude-api-reliable/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Claude API中转稳定性实测·长期不掉线的选择 | KingFlow">
+<meta property="og:description" content="连续一周实测 Claude API 中转的 TTFT、失败率、断连，讲清 429/流式中断/高峰变慢的归因，生产环境主备+重试+降级+超时容灾做法，稳定选 KingFlow。">
+<meta property="og:url" content="https://kingflowapi.github.io/claude-api-reliable/">
+<meta property="og:site_name" content="KingFlow">
+<meta property="og:image" content="https://www.kingflow.ai/logo.png">
+<meta name="twitter:card" content="summary">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="/">King<span>Flow</span></a>
+  <nav class="topnav"><a href="/">首页</a>
+<a href="/claude-api/">Claude 接入指南</a>
+<a href="/claude-code/">Claude Code 方案</a>
+<a href="/claude-proxy/">Claude 调用教程</a>
+<a href="/ai-gateway/">多模型网关</a>
+<a href="/codex-cli/">Codex 实战</a>
+<a href="/llm-proxy-selection/">中转站选型实测</a>
+<a href="/claude-no-vpn/">不用梯子调Claude</a>
+<a href="/continue-vscode-api/">Continue接入笔记</a>
+<a href="/claude-haiku-price/">Haiku 4.5价格</a>
+<a href="/cursor-claude-code/">Cursor+Claude Code</a>
+<a href="/claude-code-multi-model/">Claude Code多模型省钱</a>
+<a href="/codex-responses-api/">Codex协议桥接排障</a>
+<a href="/claude-code-no-ban/">Claude Code不封号</a>
+<a href="/best-claude-proxy/">中转站推荐清单</a>
+<a href="/claude-proxy-experience/">两年使用经验帖</a>
+<a href="/claude-api-reliable/" class="active">稳定性实测容灾</a></nav>
+  <a class="cta" href="https://www.kingflow.ai" rel="noopener">前往官网 →</a>
+</header>
+<main>
+<article class="post">
+<h1>Claude API 中转稳定性实测：长期不掉线的选择</h1>
+<div align="center">
+<h3>KingFlow · 国内直连 AI API 中转</h3>
+<a href="https://www.kingflow.ai"><img src="https://img.shields.io/badge/官网-www.kingflow.ai-FF6B35" alt="KingFlow"></a>
+<a href="https://www.kingflow.ai"><img src="https://img.shields.io/badge/协议-Anthropic原生-2E8B57" alt="Native"></a>
+<a href="https://www.kingflow.ai"><img src="https://img.shields.io/badge/接入-改一行BaseURL-4C7CFF" alt="EasySetup"></a>
+</div>
+
+<p>稳定性这件事，光看参数表没用。我不太信别人贴的漂亮数字，索性自己搭了个监控，把手上在用的中转渠道连续跑了一周，把数据落到本地。这篇不讲"稳定性应该看哪些指标"那套科普，只讲一件事：<strong>我是怎么实测的，实测里踩到什么坑，以及我在生产环境里怎么把这些坑兜住的。</strong></p>
+<p>如果你只是想找个能长期跑、半夜不用起来救火的中转，直接看第三、四节。</p>
+<h2>一、我的实测方法：连续跑一周，把数据落盘</h2>
+<p>选型阶段我最烦一次性测试——中午随手发几个请求，都通，就下结论。这种测法测不出稳定性，稳定性是时间维度上的东西。</p>
+<p>我的做法很土，但管用：写了个脚本，挂在一台常年开机的机器上，<strong>每隔几分钟打一发真实请求</strong>（不是 ping，是真正走 <code>/v1/messages</code> 让模型吐几十个 token），连续跑满七天，覆盖工作日高峰和凌晨低谷。每次请求我记三个数：</p>
+<ul>
+<li><strong>TTFT（首字延迟）</strong>：从发出请求到收到第一个 token 的时间。这个最能反映链路和排队情况。</li>
+<li><strong>失败率</strong>：按错误类型分桶——超时、连接被重置、HTTP 4xx/5xx 各记各的，不混在一起。</li>
+<li><strong>断连次数</strong>：专门盯流式请求，统计"开了流但中途断掉、没收到 stop 事件"的比例。</li>
+</ul>
+<p>数字我这里就不贴精确值了（软化处理，不同时段差异也大），但<strong>分布形态比平均值重要得多</strong>。举个例子：某个渠道平均 TTFT 看着还行，可一画分布图就露馅——白天大部分请求一两秒回，但每到晚高峰会甩出一条长尾，偶尔十几秒才出第一个字。平均值把这条尾巴稀释掉了，你只看平均永远发现不了。所以我建议你也记 <strong>P95 / P99</strong>，而不是只看平均。</p>
+<p>跑一周的另一个好处是能撞见"低频故障"。有些问题一小时测一次撞不上，但一天几百上千次请求里，总会漏出马脚。</p>
+<h2>二、实测暴露的三类问题，及怎么判断是谁的锅</h2>
+<p>一周下来，问题基本归成三类。关键是<strong>学会区分是中转的锅、还是你自己网络/代码的锅</strong>，不然容易冤枉渠道，也容易放过真凶。</p>
+<p><strong>1）偶发 429（限流/排队）</strong>
+高峰期零星冒出 429。判断法：如果只在整点、晚高峰这种明显的流量尖峰出现，且比例不高，多半是上游排队，属正常波动，退避重试一下就过去了；如果<strong>任意时段稳定高频 429</strong>，那才是渠道容量或倍率策略有问题，得换。</p>
+<p><strong>2）流式中断</strong>
+流开着开着断了，没收到结束事件。这个最容易误判。我的排查顺序是：先看<strong>是不是固定在某个时长断</strong>——如果几乎都卡在同一秒数，那基本是中间某一跳（你的反代、网关、甚至公司出口）有空闲超时把长连接掐了，跟中转关系不大；如果断点随机、且集中在某渠道，才是渠道的流式链路不稳。</p>
+<p><strong>3）高峰变慢</strong>
+不报错，就是慢，TTFT 整体抬高。这个看时段相关性：如果只在特定时段慢、其余时间正常，通常是上游节点在高峰被挤；如果<strong>从早到晚一直慢</strong>，先怀疑自己这端的网络路由（尤其是走了海外节点或自建代理绕了远路）。</p>
+<p>这三类里，真正致命的是"任意时段高频失败"和"客服失联突然跑路"。前两类偶发的，靠第四节的容灾基本能吃掉。</p>
+<h2>三、KingFlow 在我这边的长期实测表现</h2>
+<p>拿 KingFlow 跑同一套监控，它能被我长期留下来，主要是这几点扛住了实测：</p>
+<ul>
+<li><strong>国内直连，TTFT 稳</strong>：走国内节点，首字延迟通常在一两秒到三秒这个区间，不用自己再挂代理绕出去。对比之前走海外节点动辄几十秒的体感，凌晨和高峰的分布都收得比较紧，长尾没那么夸张。</li>
+<li><strong>协议原生，不容易被上游更新搞挂</strong>：它走的是 Anthropic 官方 <code>/v1/messages</code> 协议，不是逆向某个客户端反代出来的。实测意义在于——上游模型侧做调整时，这种原生对接受影响小，我这一周没遇到"某天突然全线报错"那种事故。</li>
+<li><strong>流式稳、断连比例低</strong>：流式输出这一周里断连的占比很低，且没有集中在固定时长，说明不是它这端在掐连接。</li>
+<li><strong>后台可查用量，出问题能对账</strong>：真出了异常，我能进后台翻调用日志、看 token 用量和余额明细，判断到底是我发多了还是渠道抖了，不用靠猜。这点在排障时省了大量时间。</li>
+</ul>
+<p>配置上没什么门槛，Claude 侧就改两个环境变量：</p>
+<pre><code class="language-bash">export ANTHROPIC_BASE_URL=&quot;https://www.kingflow.ai&quot;
+export ANTHROPIC_AUTH_TOKEN=&quot;你的_KingFlow_Key&quot;
+</code></pre>
+<p>OpenAI/Codex 兼容侧则用 <code>https://www.kingflow.ai/v1</code> 作为 base_url、<code>OPENAI_API_KEY</code> 作鉴权。一个 Key 改 <code>model</code> 参数就能在 claude-opus-4-8、claude-sonnet-4-6、claude-haiku-4-5 之间切，不用维护多套凭证。数字类的（送多少额度、倍率）以后台为准，我就不写死了。</p>
+<h2>四、生产环境别单点：备用渠道 + 重试降级超时</h2>
+<p>这是全文最想强调的一点：<strong>再稳的单一渠道，生产环境也别只挂一个。</strong> 稳定性不是"找到一个永不出错的渠道"，而是"任何单点出错时业务不受影响"。我的生产配置一直是——<strong>一个主渠道 + 一到两个备用渠道</strong>，代码里做好重试、降级、超时。</p>
+<p>要点：</p>
+<ul>
+<li><strong>重试要带指数退避</strong>，别写死循环猛打，429 只会越打越糟；</li>
+<li><strong>失败要能自动切备用渠道</strong>，主渠道连续失败就降级，别卡在一棵树上吊死；</li>
+<li><strong>每一层都要有超时</strong>，连接超时、首字超时、整体超时分开设，避免一个卡死请求拖垮整个 worker。</li>
+</ul>
+<p>一段简化的伪代码表达思路（主备 + 退避 + 超时）：</p>
+<pre><code class="language-python">CHANNELS = [
+    {&quot;base_url&quot;: &quot;https://www.kingflow.ai&quot;, &quot;key&quot;: KF_KEY},   # 主：国内直连
+    {&quot;base_url&quot;: BACKUP_BASE_URL,            &quot;key&quot;: BK_KEY},   # 备：兜底
+]
+
+def call_with_failover(payload, model=&quot;claude-sonnet-4-6&quot;):
+    last_err = None
+    for ch in CHANNELS:                      # 渠道级降级
+        for attempt in range(3):             # 单渠道内重试
+            try:
+                return request(
+                    ch[&quot;base_url&quot;], ch[&quot;key&quot;], model, payload,
+                    connect_timeout=5,        # 连接超时
+                    read_timeout=60,          # 首字/读超时
+                )
+            except (Timeout, RateLimited, StreamBroken) as e:
+                last_err = e
+                sleep(min(2 ** attempt, 8))   # 指数退避，封顶
+        # 本渠道三次都挂 → 切下一个渠道
+    raise last_err
+</code></pre>
+<p>关键不在代码多漂亮，而在<strong>故障域被隔离了</strong>：主渠道抽风时，用户侧顶多多等一两秒切到备用，而不是直接看到报错。备用渠道平时可以用便宜的高频模型（比如 claude-haiku-4-5）压成本，只在主渠道失守时顶上。</p>
+<h2>五、长任务的超时与重试，要单独对待</h2>
+<p>短对话随便配都行，真正容易翻车的是<strong>长任务</strong>——大文件重构、长文档总结、Agent 多轮工具调用。这类请求本身就慢，用短请求那套超时会被误杀。几个我踩过坑后固定下来的做法：</p>
+<ul>
+<li><strong>首字超时和整体超时分开</strong>：长任务首字可能就要好几秒，别把 <code>read_timeout</code> 设太短，否则模型还在思考你就把它掐了当失败。</li>
+<li><strong>优先用流式</strong>：流式能让你持续收到 token，既能提早发现中断，又能避免"整体超时"在漫长的非流式等待里一刀切死。</li>
+<li><strong>长任务的重试要谨慎</strong>：非幂等的长生成盲目重试会翻倍烧钱、还可能产出重复内容。我一般给长任务设<strong>更少的重试次数 + 更长的退避</strong>，并且重试前先判断是不是真失败（有没有部分结果可用）。</li>
+<li><strong>拆分而非硬扛</strong>：能拆成多段的长任务尽量拆，单请求越短，命中偶发故障的窗口越小，重试代价也越小。</li>
+</ul>
+<p>配合第三节的 Prompt Cache 透传，长任务里重复的系统提示、上下文前缀还能吃到缓存，第二次起 <code>cache_read_input_tokens</code> 非零，长文档反复处理的成本能明显往下压。</p>
+<h2>FAQ</h2>
+<p><strong>Q1：只测一次都通了，为什么你非要跑一周？</strong>
+因为稳定性是时间维度的属性。一次性测试只能证明"此刻能用"，测不出晚高峰长尾、低频断连这些真正折磨人的问题。这些只有连续跑、看 P95/P99 分布才现形。</p>
+<p><strong>Q2：流式老是中途断，一定是中转的锅吗？</strong>
+不一定。先看断点是不是固定在某个时长——如果几乎都卡在同一秒数，大概率是你自己链路上某个反代/网关的空闲超时在掐长连接，先去查那一层。断点随机且集中在某渠道，才更可能是渠道流式不稳。</p>
+<p><strong>Q3：都用 KingFlow 了，还有必要配备用渠道吗？</strong>
+有。这是架构问题不是渠道问题——生产环境任何单点都该有兜底。KingFlow 做主渠道，再挂一个备用做 failover，主渠道偶发抽风时业务无感，这套组合比赌某个渠道零故障靠谱得多。</p>
+<p><strong>Q4：偶发 429 要紧吗？</strong>
+看分布。只在明显流量尖峰零星出现、比例不高，带指数退避重试一下就过去了，不用慌。如果任意时段都高频 429，那才是容量/策略问题，该考虑主备切换或换渠道了。</p>
+<hr />
+<p>稳定不是碰运气，是<strong>实测 + 兜底</strong>两件事一起做出来的。方法很简单：连续跑一周把数据落盘、看分布而非平均、生产上主备双渠道加重试降级超时。渠道选一个国内直连、协议原生、后台能对账的做主力（我这边一直是 <a href="https://www.kingflow.ai">KingFlow</a>），剩下的交给你的容错代码。这样才是真正"长期不掉线"。</p>
+</article>
+</main>
+<footer class="site-footer">
+  <p><strong>KingFlow</strong> · 国内直连、稳定低延迟的 Claude / GPT API 中转平台</p>
+  <p>官网：<a href="https://www.kingflow.ai" rel="noopener">www.kingflow.ai</a> ｜ 支持 Claude Code · OpenAI Codex · 全系 Claude / GPT 模型</p>
+  <p class="muted">© 2026 KingFlow. 本站为 KingFlow 中转方案与配置教程合集。</p>
+</footer>
+</body>
+</html>

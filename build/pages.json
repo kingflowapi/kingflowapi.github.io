@@ -99,6 +99,12 @@
       "nav": "两年使用经验帖",
       "title": "用Claude中转站两年的经验帖·从踩坑到选型 | KingFlow",
       "desc": "两年折腾 Claude API 的经验：硬刚官方直连被封、自建 One API 运维崩、试中转踩掉包限速软坑，到现在稳定用 KingFlow 多模型的选型心得。"
+    },
+    {
+      "slug": "claude-api-reliable",
+      "nav": "稳定性实测容灾",
+      "title": "Claude API中转稳定性实测·长期不掉线的选择 | KingFlow",
+      "desc": "连续一周实测 Claude API 中转的 TTFT、失败率、断连，讲清 429/流式中断/高峰变慢的归因，生产环境主备+重试+降级+超时容灾做法，稳定选 KingFlow。"
     }
   ]
 }
