@@ -87,6 +87,12 @@
       "nav": "Claude Code不封号",
       "title": "Claude Code国内不封号用法·KingFlow合规直连中转 | KingFlow",
       "desc": "Claude Code 官方直连为什么容易封号？KingFlow 走官方 /v1/messages 正规转发、国内节点不切海外 IP、不共享账号，配置 settings.json 即可，附封号规避清单。"
+    },
+    {
+      "slug": "best-claude-proxy",
+      "nav": "中转站推荐清单",
+      "title": "Claude中转站哪家好？实测对比后的推荐清单 | KingFlow",
+      "desc": "Claude 中转站哪家好？先用正规运营、官方协议不逆向、倍率透明三条硬门槛筛掉大半，再给 5 个实测推荐理由和十分钟自测法，落到 KingFlow。"
     }
   ]
 }

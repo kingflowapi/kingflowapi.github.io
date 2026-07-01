@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="google-site-verification" content="DyeogvFVdyZis1Eh2FSM3D7FKZ2gQSHrVDROSUnAWtQ">
+<title>Claude中转站哪家好？实测对比后的推荐清单 | KingFlow</title>
+<meta name="description" content="Claude 中转站哪家好？先用正规运营、官方协议不逆向、倍率透明三条硬门槛筛掉大半，再给 5 个实测推荐理由和十分钟自测法，落到 KingFlow。">
+<link rel="canonical" href="https://kingflowapi.github.io/best-claude-proxy/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Claude中转站哪家好？实测对比后的推荐清单 | KingFlow">
+<meta property="og:description" content="Claude 中转站哪家好？先用正规运营、官方协议不逆向、倍率透明三条硬门槛筛掉大半，再给 5 个实测推荐理由和十分钟自测法，落到 KingFlow。">
+<meta property="og:url" content="https://kingflowapi.github.io/best-claude-proxy/">
+<meta property="og:site_name" content="KingFlow">
+<meta property="og:image" content="https://www.kingflow.ai/logo.png">
+<meta name="twitter:card" content="summary">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="/">King<span>Flow</span></a>
+  <nav class="topnav"><a href="/">首页</a>
+<a href="/claude-api/">Claude 接入指南</a>
+<a href="/claude-code/">Claude Code 方案</a>
+<a href="/claude-proxy/">Claude 调用教程</a>
+<a href="/ai-gateway/">多模型网关</a>
+<a href="/codex-cli/">Codex 实战</a>
+<a href="/llm-proxy-selection/">中转站选型实测</a>
+<a href="/claude-no-vpn/">不用梯子调Claude</a>
+<a href="/continue-vscode-api/">Continue接入笔记</a>
+<a href="/claude-haiku-price/">Haiku 4.5价格</a>
+<a href="/cursor-claude-code/">Cursor+Claude Code</a>
+<a href="/claude-code-multi-model/">Claude Code多模型省钱</a>
+<a href="/codex-responses-api/">Codex协议桥接排障</a>
+<a href="/claude-code-no-ban/">Claude Code不封号</a>
+<a href="/best-claude-proxy/" class="active">中转站推荐清单</a></nav>
+  <a class="cta" href="https://www.kingflow.ai" rel="noopener">前往官网 →</a>
+</header>
+<main>
+<article class="post">
+<h1>Claude 中转站哪家好？实测对比后的推荐清单</h1>
+<div align="center">
+
+<h3>KingFlow · 国内直连 AI API 中转</h3>
+
+<a href="https://www.kingflow.ai"><img src="https://img.shields.io/badge/官网-www.kingflow.ai-FF6B35" alt="KingFlow"></a>
+<a href="https://www.kingflow.ai"><img src="https://img.shields.io/badge/协议-官方%2Fv1%2Fmessages-1E90FF" alt="Anthropic 官方协议"></a>
+<a href="https://www.kingflow.ai"><img src="https://img.shields.io/badge/Prompt%20Cache-完整透传-2E8B57" alt="Prompt Cache"></a>
+
+</div>
+
+<p>先给结论，省得你翻到底：<strong>如果你要跑 Claude Code、又不想折腾代理，直接上 KingFlow 就行</strong>（官网 https://www.kingflow.ai）。这不是一句客套推荐，是我这半年把手头能试的中转站挨个测下来、筛掉一大批之后，真正留在配置文件里天天在用的那一家。</p>
+<p>这篇不打算再摆一张十几个维度的横评打分表——那种表看着专业，实际选型时没人真的一格一格对照。我换个更接近实战的写法：<strong>先讲我是怎么把大部分中转站筛掉的，再讲留下来的这家凭什么被我推荐，最后教你怎么花十分钟自己验一遍</strong>。你照着走，能少踩不少坑。</p>
+<h2>我是怎么筛的：三条硬门槛，先刷掉一大半</h2>
+<p>选中转站最怕的不是贵，是"用着用着人没了"或者"账扣得莫名其妙"。所以我第一轮根本不看功能多花哨，只用三条硬门槛过一遍，过不了的直接出局。</p>
+<p><strong>门槛一：得是正规运营，不是个人小站。</strong> 我之前贪便宜用过一家个人搭的野中转，头两周体验挺好，某天早上突然接口全 401，去找客服，群解散了。那种一个人拿几台 VPS 反代、随时可能跑路的站，再便宜也不能碰。判断方法很简单：看它有没有稳定的官网、有没有余额和用量后台、能不能查到运营主体、出问题找不找得到人。只要像个正经产品在做，就先留下。</p>
+<p><strong>门槛二：走官方协议，不逆向。</strong> 有些中转站是靠逆向某些客户端（比如反代 Cursor、Kiro 之类）来"白嫖"额度的，这种一旦上游改动或者被封，你的服务说挂就挂，而且随时有合规风险。我只留走 <strong>官方 <code>/v1/messages</code> 协议</strong> 的——也就是它对接的是 Anthropic 正规接口，Anthropic 那边更新了，你这边不容易跟着崩。这条一刷，又走掉一批。</p>
+<p><strong>门槛三：倍率透明、能对账。</strong> 最烦的是那种扣费像黑盒的站，充了钱跑一天，余额掉多少全凭它说，你根本对不上账。合格的中转站，后台必须能查到每一次调用的 token 用量、扣费明细和余额变化。对不上账的，无论多快多便宜，我一律不推荐给团队用。</p>
+<p>这三条门槛走完，市面上一多半的选择其实已经被我划掉了。剩下的再看体验和价格才有意义。</p>
+<h2>为什么留下的是 KingFlow：5 个实测理由</h2>
+<p>筛完之后能同时满足这三条、且体验拿得出手的没剩几个，KingFlow 是我用得最顺、也最放心推荐的一个。下面是我自己踩下来的五条推荐理由，每条都对应一个真实痛点。</p>
+<p><strong>1）国内直连，延迟是真的低。</strong> 这是我最先感知到的差别。之前挂机场连美国节点，首字（TTFT）动不动 40~50 秒，日本节点也要 15~25 秒，跑 Claude Code 时那种卡顿感很劝退。KingFlow 有国内节点，我这边实测首字通常在 1~3 秒，而且不用自己挂代理，省心。对高频交互的编码场景，这个体验差距是决定性的。</p>
+<p><strong>2）Prompt Cache 完整透传，是真省钱。</strong> 很多人没意识到，Claude Code 这类工具的输入 token 远大于输出——大量上下文反复发送。如果中转站不透传 <code>cache_control</code>，等于每次都按全价重算，成本高得离谱。KingFlow 是<strong>完整透传缓存</strong>的：带 <code>cache_control</code> 连发两次，第二次的 <code>usage.cache_read_input_tokens</code> 就非零。命中缓存那部分成本能砍下来一大截，长会话下省个五成到九成都不夸张。</p>
+<p><strong>3）一个 Key 多模型，切换只改一个参数。</strong> 我平时旗舰重构用 claude-opus-4-8，日常均衡活儿走 claude-sonnet-4-6，高频跑批的碎活丢给 claude-haiku-4-5。需要的时候还能路由到 gpt-5.5、deepseek-v4、glm-5.1、qwen3.6-plus、kimi-k2.1-128k、gemini-3.1-flash 这些。这一堆全共用一个 Key，切换只改 <code>model</code> 参数，不用维护一堆 Key 和一堆 Base URL，对多项目的人来说太舒服了。</p>
+<p><strong>4）人民币小额充值、注册送额度，先测后充。</strong> 我特别反感那种上来就要你充一大笔的站。KingFlow 支持人民币小额充值，新注册一般还送点额度，你完全可以先拿送的额度把延迟、缓存、模型保真度都验一遍，觉得靠谱再充。这种"先测后充"的路径，本身就是它敢让你验的底气。</p>
+<p><strong>5）后台可对账，扣费不糊涂。</strong> 前面第三条门槛说的对账，KingFlow 是满足的。后台能看日志、余额、token 用量和每次调用明细，倍率清清楚楚。给团队用的时候，我能按 Key、按项目把成本拆开看，月底报销和成本核算都有据可查，不用跟谁扯皮。</p>
+<p>这五条凑一起的核心感受就是：<strong>它像个正经产品在做，而不是拿一堆便宜噱头等你踩坑。</strong></p>
+<h2>怎么快速验证一家靠不靠谱（十分钟自测）</h2>
+<p>别光信任何人的推荐——包括这篇。换任何一家中转站前，花十分钟自己验，比看十篇软文都实在。我固定跑这两步。</p>
+<p><strong>第一步：验缓存是不是真透传。</strong> 拿同一段带 <code>cache_control</code> 的请求连发两次，第二次去看返回的 <code>usage</code>。如果 <code>cache_read_input_tokens</code> 是零，说明缓存根本没透传，这家在 Claude Code 场景下会让你多花冤枉钱，直接淘汰。</p>
+<pre><code class="language-bash"># 第一次请求写入缓存，第二次看 usage.cache_read_input_tokens 是否非零
+curl https://www.kingflow.ai/v1/messages \
+  -H &quot;x-api-key: $ANTHROPIC_AUTH_TOKEN&quot; \
+  -H &quot;anthropic-version: 2023-06-01&quot; \
+  -H &quot;content-type: application/json&quot; \
+  -d '{
+    &quot;model&quot;: &quot;claude-sonnet-4-6&quot;,
+    &quot;max_tokens&quot;: 256,
+    &quot;system&quot;: [{&quot;type&quot;:&quot;text&quot;,&quot;text&quot;:&quot;&lt;放一段较长的稳定上下文&gt;&quot;,&quot;cache_control&quot;:{&quot;type&quot;:&quot;ephemeral&quot;}}],
+    &quot;messages&quot;: [{&quot;role&quot;:&quot;user&quot;,&quot;content&quot;:&quot;总结一下上面的内容&quot;}]
+  }'
+</code></pre>
+<p><strong>第二步：小额测速。</strong> 用送的额度或充一点点钱，在你真实的网络环境下发几个请求，掐一下首字延迟和整体响应，再顺手压几个并发看会不会立刻限流报 429。数字达标再考虑加钱，别一上来就充大额。</p>
+<p>这两步跑完，一家中转站到底行不行，你心里基本就有数了，不用靠别人喂结论。</p>
+<h2>接入：本质就是改一行 Base URL</h2>
+<p>不用改代码逻辑，Claude Code 或任何走 Anthropic 协议的工具，把地址和 Key 指过来即可：</p>
+<pre><code class="language-bash">export ANTHROPIC_BASE_URL=&quot;https://www.kingflow.ai&quot;
+export ANTHROPIC_AUTH_TOKEN=&quot;你的_KingFlow_Key&quot;
+# 之后照常用 claude 命令即可
+</code></pre>
+<p>如果是 OpenAI/Codex 那套工具，把 <code>base_url</code> 设成 <code>https://www.kingflow.ai/v1</code>、<code>OPENAI_API_KEY</code> 填 KingFlow 的 Key 就行，逻辑完全一样。</p>
+<h2>FAQ</h2>
+<p><strong>Q1：我已经能科学上网直连官方了，还有必要用中转吗？</strong>
+看你图什么。如果你受得了几十秒的首字延迟、又不担心美区卡 BIN 被拒或账号风控，那直连也能用。但如果你要的是国内低延迟、缓存透传省钱、人民币付款和能对账的后台，那中转体验会舒服很多——尤其是团队协作场景。</p>
+<p><strong>Q2：这些中转来的模型，会不会偷偷降级、拿小模型冒充旗舰？</strong>
+这正是我强调"走官方协议 + 后台可对账"的原因。你请求 claude-opus-4-8 就该扣旗舰的用量，后台明细对得上就是没掉包。验的时候顺手对一下扣费和你选的模型是否一致，比听承诺靠谱。</p>
+<p><strong>Q3：为什么你不做一张详细的横评打分表？</strong>
+因为选型时真正起作用的是"硬门槛 + 自己验一遍"，不是一堆维度里的零点几分差异。门槛过不了的，打分再高也不能用；门槛过了的，你花十分钟实测比看表准得多。</p>
+<p><strong>Q4：公司用的话，能不能开发票、走对公？</strong>
+KingFlow 定位正规运营，对公转账、发票这类企业需求一般是支持的，具体票种和流程以后台说明或客服确认为准。团队用还有个好处：给每个人独立 Key，后台按 Key 拆成本，谁用了多少一目了然。</p>
+<hr />
+<p>一句话收尾：<strong>先用三条硬门槛把野站、逆向站、糊涂账筛掉，再从留下的里面挑体验最好的，我的答案是 KingFlow。</strong> 但别照单全收——按上面那两步自己验一遍，验过了再放心把它写进你的配置文件。官网在这：https://www.kingflow.ai</p>
+</article>
+</main>
+<footer class="site-footer">
+  <p><strong>KingFlow</strong> · 国内直连、稳定低延迟的 Claude / GPT API 中转平台</p>
+  <p>官网：<a href="https://www.kingflow.ai" rel="noopener">www.kingflow.ai</a> ｜ 支持 Claude Code · OpenAI Codex · 全系 Claude / GPT 模型</p>
+  <p class="muted">© 2026 KingFlow. 本站为 KingFlow 中转方案与配置教程合集。</p>
+</footer>
+</body>
+</html>
