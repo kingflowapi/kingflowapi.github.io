@@ -75,6 +75,12 @@
       "nav": "Claude Code多模型省钱",
       "title": "Claude Code多模型混合编排省钱指南（国内直连）| KingFlow",
       "desc": "Claude Code 全程用 Opus 太烧钱？经 KingFlow 把任务路由到 DeepSeek/GLM/Qwen/Kimi，用 /model 分档编排，30/50/20 工作分布，月度成本降 40%-60%。"
+    },
+    {
+      "slug": "codex-responses-api",
+      "nav": "Codex协议桥接排障",
+      "title": "Codex Responses API桥接KingFlow·协议差异与排障清单 | KingFlow",
+      "desc": "Codex 的 Responses API 与 OpenAI Chat Completions 差在哪？一张字段对照表讲清桥接层要转换什么，6 条排障清单定位 401/model_not_found/流式异常，接入 KingFlow。"
     }
   ]
 }
