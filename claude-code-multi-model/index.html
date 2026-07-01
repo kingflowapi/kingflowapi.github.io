@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="google-site-verification" content="DyeogvFVdyZis1Eh2FSM3D7FKZ2gQSHrVDROSUnAWtQ">
+<title>Claude Code多模型混合编排省钱指南（国内直连）| KingFlow</title>
+<meta name="description" content="Claude Code 全程用 Opus 太烧钱？经 KingFlow 把任务路由到 DeepSeek/GLM/Qwen/Kimi，用 /model 分档编排，30/50/20 工作分布，月度成本降 40%-60%。">
+<link rel="canonical" href="https://kingflowapi.github.io/claude-code-multi-model/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Claude Code多模型混合编排省钱指南（国内直连）| KingFlow">
+<meta property="og:description" content="Claude Code 全程用 Opus 太烧钱？经 KingFlow 把任务路由到 DeepSeek/GLM/Qwen/Kimi，用 /model 分档编排，30/50/20 工作分布，月度成本降 40%-60%。">
+<meta property="og:url" content="https://kingflowapi.github.io/claude-code-multi-model/">
+<meta property="og:site_name" content="KingFlow">
+<meta property="og:image" content="https://www.kingflow.ai/logo.png">
+<meta name="twitter:card" content="summary">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="/">King<span>Flow</span></a>
+  <nav class="topnav"><a href="/">首页</a>
+<a href="/claude-api/">Claude 接入指南</a>
+<a href="/claude-code/">Claude Code 方案</a>
+<a href="/claude-proxy/">Claude 调用教程</a>
+<a href="/ai-gateway/">多模型网关</a>
+<a href="/codex-cli/">Codex 实战</a>
+<a href="/llm-proxy-selection/">中转站选型实测</a>
+<a href="/claude-no-vpn/">不用梯子调Claude</a>
+<a href="/continue-vscode-api/">Continue接入笔记</a>
+<a href="/claude-haiku-price/">Haiku 4.5价格</a>
+<a href="/cursor-claude-code/">Cursor+Claude Code</a>
+<a href="/claude-code-multi-model/" class="active">Claude Code多模型省钱</a></nav>
+  <a class="cta" href="https://www.kingflow.ai" rel="noopener">前往官网 →</a>
+</header>
+<main>
+<article class="post">
+<h1>Claude Code 多模型混合编排省钱指南（国内直连 KingFlow）</h1>
+<div align="center">
+<h3>KingFlow · 国内直连 AI API 中转</h3>
+<a href="https://www.kingflow.ai"><img src="https://img.shields.io/badge/官网-www.kingflow.ai-FF6B35" alt="KingFlow"></a>
+<a href="https://www.kingflow.ai"><img src="https://img.shields.io/badge/协议-Anthropic%20%2Fv1%2Fmessages-2E7D32" alt="Anthropic 协议"></a>
+</div>
+
+<p>我用 Claude Code 大半年，最深的体会不是"它多聪明"，而是"它多能花钱"。一开始我图省事，从早到晚全程挂着 claude-opus-4-8，写个正则、加句注释、跑个一次性脚本，全用旗舰模型硬上。月底一看账单，心里咯噔一下——大部分钱其实烧在了根本不需要旗舰的琐事上。</p>
+<p>这篇不讲配置文件怎么写（那是另一篇的事），只聊一件事：<strong>怎么用多模型混合编排，把 Claude Code 的账单砍下来 40%-60%，还基本不影响手感。</strong> 全程走 KingFlow（https://www.kingflow.ai）国内直连。</p>
+<h2>一、全程 Opus 到底烧在哪</h2>
+<p>先说清楚痛点，不然省钱无从谈起。</p>
+<p>Claude Code 是终端里的 Agent，它干活的方式是：读一堆文件 → 塞进上下文 → 思考 → 改文件 → 跑命令 → 看报错 → 再改。这套循环里，<strong>输入 token 远远大于输出 token</strong>。你让它改一行代码，它可能先读了十几个文件垫底。</p>
+<p>问题就在这：旗舰模型 claude-opus-4-8 的单价最高，而你 70% 的操作——补个注释、改个变量名、写段 README、跑个格式化脚本——压根用不到旗舰的推理深度。用 Opus 干这些，等于开着跑车去买菜，油钱全浪费在"排面"上。</p>
+<p>真正吃 Opus 算力的其实只有少数场景：跨文件大重构、架构决策、复杂 Bug 的根因定位。剩下的活，国产模型和均衡档完全接得住，价格却是几分之一。</p>
+<h2>二、Claude Code 走 Anthropic 协议，能路由的不只 Claude</h2>
+<p>很多人不知道的一点：Claude Code 底层走的是 Anthropic 的 <code>/v1/messages</code> 协议，而这个协议的入口是可替换的。只要中转端支持模型路由，你就能在同一个 Claude Code 里，用 <code>/model</code> 命令切到<strong>非 Claude 的模型</strong>上去干活。</p>
+<p>KingFlow 就是这么接的——它走官方 <code>/v1/messages</code> 协议（不是逆向 Cursor/Kiro 那套，Anthropic 一更新就挂的方案），同时在后端挂了一票国产大模型。于是你在 Claude Code 里能直接调用的，除了 Claude 三档，还有：</p>
+<table>
+<thead>
+<tr>
+<th>厂商</th>
+<th>在售模型</th>
+<th>定位</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Anthropic</td>
+<td>claude-opus-4-8</td>
+<td>旗舰，重活专用</td>
+</tr>
+<tr>
+<td>Anthropic</td>
+<td>claude-sonnet-4-6</td>
+<td>均衡，中等复杂度</td>
+</tr>
+<tr>
+<td>Anthropic</td>
+<td>claude-haiku-4-5</td>
+<td>高频低成本</td>
+</tr>
+<tr>
+<td>DeepSeek</td>
+<td>deepseek-v4 / deepseek-reasoner</td>
+<td>日常主力，性价比之王</td>
+</tr>
+<tr>
+<td>智谱</td>
+<td>glm-5.1 / glm-5.1-flash</td>
+<td>文档注释、轻量改动</td>
+</tr>
+<tr>
+<td>通义</td>
+<td>qwen3.6-plus / qwen3.6-turbo</td>
+<td>中等任务备选</td>
+</tr>
+<tr>
+<td>Kimi</td>
+<td>kimi-k2.1-128k</td>
+<td>长上下文场景</td>
+</tr>
+</tbody>
+</table>
+<p>一个 API Key、一个端点（https://www.kingflow.ai），全都能调。省钱的底子就在这里：<strong>贵活留给 Claude，杂活分给国产。</strong></p>
+<h2>三、/model 切换实战：三档手感对照</h2>
+<p>真正干活时，我基本就在三个模型之间来回切，用一条 <code>/model</code> 命令就够了：</p>
+<ul>
+<li><strong>日常小改用 <code>/model deepseek-v4</code></strong>：改逻辑、写函数、调接口、跑一次性脚本。deepseek-v4 的代码能力足够扛住绝大多数增量开发，单价低到你不会心疼，这是我一天里待得最久的档。</li>
+<li><strong>注释文档用 <code>/model glm-5.1-flash</code></strong>：补 docstring、写 README、翻译注释、整理 changelog。这类活对推理深度要求极低，flash 档快而便宜，用旗舰纯属烧钱。</li>
+<li><strong>大重构上 <code>/model claude-opus-4-8</code></strong>：跨文件架构调整、牵一发动全身的重构、疑难 Bug 根因定位。这种活值得为它的推理买单，也只有这种活值得。</li>
+</ul>
+<p>切换是即时的，同一个会话里说切就切。养成"开工前先想这活配几档"的习惯，账单会诚实地回报你。</p>
+<h2>四、工作分布建议表：为什么能降 40%-60%</h2>
+<p>把一天的活按复杂度分个类，落到模型上，大概长这样：</p>
+<table>
+<thead>
+<tr>
+<th>任务占比</th>
+<th>复杂度</th>
+<th>推荐模型</th>
+<th>典型场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>30%</td>
+<td>简单</td>
+<td>glm-5.1-flash / claude-haiku-4-5</td>
+<td>注释、文档、格式化、小脚本</td>
+</tr>
+<tr>
+<td>50%</td>
+<td>中等</td>
+<td>deepseek-v4 / qwen3.6-plus</td>
+<td>增量开发、改逻辑、补单测</td>
+</tr>
+<tr>
+<td>20%</td>
+<td>复杂</td>
+<td>claude-opus-4-8</td>
+<td>大重构、架构、疑难排障</td>
+</tr>
+</tbody>
+</table>
+<p>这个 30/50/20 不是拍脑袋，是我自己跑了几个月磨出来的分布。核心逻辑很简单：<strong>把最贵的旗舰用量压到 20% 以内，剩下 80% 用便宜几倍的模型接住。</strong></p>
+<p>按这个分布走，相比"从早到晚全程 Opus"，月度成本实测能降 <strong>40%-60%</strong>。降幅取决于你原来有多"奢侈"——原来越是无脑挂旗舰，省得越狠。而且因为 Claude Code 输入 token 本来就大，把大头挪到低价模型上，杠杆效应特别明显。</p>
+<p>一句话：省钱不是靠少干活，是靠<strong>让每个活匹配它该用的价位</strong>。</p>
+<h2>五、最简接入：一句话的事</h2>
+<p>不想折腾细节的话，接入就一件事：把 Claude Code 的 <code>ANTHROPIC_BASE_URL</code> 指到 <code>https://www.kingflow.ai</code>，再填上 KingFlow 后台领的 API Key，就能跑起来了。之后所有 <code>/model</code> 切换、所有国产模型路由，都通过这一个端点走。具体配置项这里不展开，你把 Base URL 改对，剩下的靠 <code>/model</code> 命令现场调度即可。</p>
+<p>国内直连、无需代理、人民币小额充值——先跑通一周工作流，账单会告诉你值不值。</p>
+<h2>六、FAQ（省钱向）</h2>
+<p><strong>Q1：切到国产模型，代码质量会不会崩？</strong>
+日常增量开发不会。deepseek-v4 写函数、改逻辑的水平完全够用；真正需要旗舰的是跨文件推理和架构决策，这些你留给 claude-opus-4-8 就行。分对档，质量和成本能兼得。</p>
+<p><strong>Q2：混用多模型，是不是要来回改配置很麻烦？</strong>
+不用。一个 KingFlow API Key、一个端点搞定全部模型，切换只靠会话里的 <code>/model</code> 命令，不碰任何配置文件。</p>
+<p><strong>Q3：到底能省多少，有没有谱？</strong>
+按 30/50/20 的分布，月度成本相比全程 Opus 降 40%-60%。你原来越依赖旗舰，省得越多。省的核心是把高价旗舰的用量压到两成以内。</p>
+<p><strong>Q4：为什么 Claude Code 省钱要盯着输入 token？</strong>
+因为它是 Agent，干活先读一大堆文件垫上下文，输入远大于输出。把这些"读得多、想得浅"的任务挪到低价模型上，省钱效果最直接——这也是多模型编排比单纯调参数更能省的原因。</p>
+<hr />
+<p>结论就一句：别再让 claude-opus-4-8 全程陪跑。用 KingFlow（https://www.kingflow.ai）走官方 Anthropic 协议接入多模型，把 <code>/model</code> 当成你的成本开关，30/50/20 分配好，账单自然瘦下来。</p>
+</article>
+</main>
+<footer class="site-footer">
+  <p><strong>KingFlow</strong> · 国内直连、稳定低延迟的 Claude / GPT API 中转平台</p>
+  <p>官网：<a href="https://www.kingflow.ai" rel="noopener">www.kingflow.ai</a> ｜ 支持 Claude Code · OpenAI Codex · 全系 Claude / GPT 模型</p>
+  <p class="muted">© 2026 KingFlow. 本站为 KingFlow 中转方案与配置教程合集。</p>
+</footer>
+</body>
+</html>

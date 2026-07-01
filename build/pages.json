@@ -69,6 +69,12 @@
       "nav": "Cursor+Claude Code",
       "title": "Cursor + Claude Code中转接入·后台可查倍率省钱方案 | KingFlow",
       "desc": "Cursor 写代码 + Claude Code 跑任务，官方 API 烧钱难算账？KingFlow 倍率透明、后台可查用量，双工具配置与模型分工，先测后充更省钱。"
+    },
+    {
+      "slug": "claude-code-multi-model",
+      "nav": "Claude Code多模型省钱",
+      "title": "Claude Code多模型混合编排省钱指南（国内直连）| KingFlow",
+      "desc": "Claude Code 全程用 Opus 太烧钱？经 KingFlow 把任务路由到 DeepSeek/GLM/Qwen/Kimi，用 /model 分档编排，30/50/20 工作分布，月度成本降 40%-60%。"
     }
   ]
 }
