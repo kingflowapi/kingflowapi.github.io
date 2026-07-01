@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="google-site-verification" content="DyeogvFVdyZis1Eh2FSM3D7FKZ2gQSHrVDROSUnAWtQ">
+<title>Claude Code国内不封号用法·KingFlow合规直连中转 | KingFlow</title>
+<meta name="description" content="Claude Code 官方直连为什么容易封号？KingFlow 走官方 /v1/messages 正规转发、国内节点不切海外 IP、不共享账号，配置 settings.json 即可，附封号规避清单。">
+<link rel="canonical" href="https://kingflowapi.github.io/claude-code-no-ban/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Claude Code国内不封号用法·KingFlow合规直连中转 | KingFlow">
+<meta property="og:description" content="Claude Code 官方直连为什么容易封号？KingFlow 走官方 /v1/messages 正规转发、国内节点不切海外 IP、不共享账号，配置 settings.json 即可，附封号规避清单。">
+<meta property="og:url" content="https://kingflowapi.github.io/claude-code-no-ban/">
+<meta property="og:site_name" content="KingFlow">
+<meta property="og:image" content="https://www.kingflow.ai/logo.png">
+<meta name="twitter:card" content="summary">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="/">King<span>Flow</span></a>
+  <nav class="topnav"><a href="/">首页</a>
+<a href="/claude-api/">Claude 接入指南</a>
+<a href="/claude-code/">Claude Code 方案</a>
+<a href="/claude-proxy/">Claude 调用教程</a>
+<a href="/ai-gateway/">多模型网关</a>
+<a href="/codex-cli/">Codex 实战</a>
+<a href="/llm-proxy-selection/">中转站选型实测</a>
+<a href="/claude-no-vpn/">不用梯子调Claude</a>
+<a href="/continue-vscode-api/">Continue接入笔记</a>
+<a href="/claude-haiku-price/">Haiku 4.5价格</a>
+<a href="/cursor-claude-code/">Cursor+Claude Code</a>
+<a href="/claude-code-multi-model/">Claude Code多模型省钱</a>
+<a href="/codex-responses-api/">Codex协议桥接排障</a>
+<a href="/claude-code-no-ban/" class="active">Claude Code不封号</a></nav>
+  <a class="cta" href="https://www.kingflow.ai" rel="noopener">前往官网 →</a>
+</header>
+<main>
+<article class="post">
+<h1>Claude Code 国内不封号用法：KingFlow 合规直连中转方案</h1>
+<div align="center">
+
+### KingFlow · 国内直连 AI API 中转
+
+<a href="https://www.kingflow.ai"><img src="https://img.shields.io/badge/官网-www.kingflow.ai-FF6B35" alt="KingFlow"></a>
+<img src="https://img.shields.io/badge/协议-官方%20%2Fv1%2Fmessages-2E86DE" alt="Anthropic 官方协议">
+<img src="https://img.shields.io/badge/计费-人民币按量-27AE60" alt="人民币计费">
+
+</div>
+
+<p>很多人第一次上手 Claude Code，兴冲冲注册官方账号、挂上代理，结果没跑几天就收到冻结邮件，充值余额还被自动退回。这不是运气问题，而是官方直连这条路对国内用户天然不友好。这篇不讲空泛的"合规科普"，只讲两件实在事：账号到底为什么会被封，以及为什么走 KingFlow 中转直连从根上就不碰这些风控点。全程实战配置向，看完照做就能跑。</p>
+<h2>一、Claude Code 官方直连为什么容易封</h2>
+<p>把封号原因拆开看，本质是三道关，每一关都能单独让你的账号进冷宫。</p>
+<p><strong>第一关：注册关——美区卡卡死大多数人。</strong> Anthropic 账号绑定支付要美区信用卡，国内常见的双币 Visa / Master，BIN 段几乎全被判定为非美区来源直接拒付。有人用虚拟卡勉强过了注册，但支付渠道本身就带风险标记，后续一有异常就是重点排查对象。注册这关卡的不只是"能不能用"，还给账号打上了初始风险分。</p>
+<p><strong>第二关：网络关——代理 IP 高频长连接分分钟暴露。</strong> Claude Code 不是聊天窗口点一下发一句，它是终端里持续跑任务的 Agent，读文件、改文件、跑命令，请求密集且都是长连接。Anthropic 对国内 IP 段本就有限制，而普通机场代理的出口 IP 早被打上数据中心标记，这种高频长连接三五分钟就把代理 IP 暴露出来，接口开始连发 403 / 429。你以为是网络卡，其实是风控在拒你。</p>
+<p><strong>第三关：风控关——设备指纹 + 出口切换触发冻结。</strong> 这一关最隐蔽。机场节点会自动切换出口 IP，你的账号可能上一分钟在洛杉矶、下一分钟跳到东京，配合设备指纹一看就是"异常登录 + 高频跳区"，风控系统直接判定账号盗用或滥用，冻结账号并自动退费。很多人到这一步都没搞明白自己做错了什么——问题是官方直连这条链路，本来就要求你自己扛下支付、网络、指纹三份风险。</p>
+<p>三关叠加，结论很清楚：<strong>官方直连的封号风险，全部来自"你在亲自持有并操作官方账号"这件事。</strong> 只要账号在你手里、还挂着不稳定的海外代理，风控就有的是理由动手。</p>
+<h2>二、KingFlow 中转为何不封</h2>
+<p>KingFlow 的思路很直接——把"持有官方账号"这件危险事从你身上拿走。你不碰官方账号，风控自然找不到你。具体到机制上有三点。</p>
+<p><strong>你不接触官方账号密码。</strong> 用 KingFlow，你手里只有一把 KingFlow 后台签发的 API Key，从头到尾不需要注册 Anthropic 账号、不需要美区卡、不需要绑定官方支付。上面说的"注册关"直接从流程里消失。既然你名下压根没有官方账号，也就不存在"你的账号被封"这回事。</p>
+<p><strong>正规转发，走官方 /v1/messages 协议。</strong> KingFlow 后端用官方 <code>/v1/messages</code> 接口做正规转发，不是那种反代 Cursor / Kiro 逆向出来的野接口。请求体透明透传，Anthropic 那边看到的是合规、稳定、来源正常的调用，而不是"某个国内 IP 挂代理疯狂长连接"。第二关的代理 IP 暴露问题，在这个模式下不存在——你的本机根本不直连 Anthropic。</p>
+<p><strong>国内节点，不切海外 IP，你的账号不共享。</strong> 你的请求打到 KingFlow 国内节点，TTFT 通常 1-3 秒，不需要挂任何代理，也就没有"出口频繁跳区"这个动作，第三关的设备指纹 + IP 切换风控自然触发不了。同时 KingFlow 是按量独立计费，不是那种一个官方账号塞几十个人共用的共享池——共享账号恰恰是最容易被官方一锅端封掉的高危模式，KingFlow 不碰。</p>
+<p>一句话：<strong>中转直连不封号，不是因为它"更小心"，而是因为它把封号的三个成因（美区卡、代理 IP、指纹切换）在架构上全部绕过了。</strong></p>
+<h2>三、配置实战：只改一个文件</h2>
+<p>配置真的只动一个文件——<code>~/.claude/settings.json</code>。把 <code>ANTHROPIC_BASE_URL</code> 指向 KingFlow 端点，填上后台领的 Key 即可。</p>
+<pre><code class="language-json">{
+  &quot;env&quot;: {
+    &quot;ANTHROPIC_BASE_URL&quot;: &quot;https://www.kingflow.ai&quot;,
+    &quot;ANTHROPIC_AUTH_TOKEN&quot;: &quot;在 KingFlow 后台领取的 API Key&quot;,
+    &quot;API_TIMEOUT_MS&quot;: &quot;3000000&quot;,
+    &quot;CLAUDE_CODE_ATTRIBUTION_HEADER&quot;: &quot;0&quot;
+  },
+  &quot;effortLevel&quot;: &quot;medium&quot;
+}
+</code></pre>
+<p>参数逐项说明：</p>
+<ul>
+<li><code>ANTHROPIC_BASE_URL</code>：中转端点，填 <code>https://www.kingflow.ai</code>，这是关键的一行。</li>
+<li><code>ANTHROPIC_AUTH_TOKEN</code>：KingFlow 控制台生成的 API Key，替代官方账号鉴权。</li>
+<li><code>API_TIMEOUT_MS</code>：设 3000000（约 50 分钟），防止跨文件大重构这类长任务半途超时中断。</li>
+<li><code>CLAUDE_CODE_ATTRIBUTION_HEADER</code>：设 <code>"0"</code> 关闭 commit 署名头，请求更干净、缓存命中也更稳。</li>
+<li><code>effortLevel</code>：日常设 <code>medium</code> 即可，省 20%-30% 推理 token，一般任务体感无差别。</li>
+</ul>
+<p>改完保存，终端里 <code>claude</code> 直接跑起来。想验证是否走通，随便让它读一个文件、跑一条命令，秒回就说明国内节点已生效。模型侧按需切换：日常改动用 <code>claude-haiku-4-5</code> 省钱，均衡任务用 <code>claude-sonnet-4-6</code>，跨文件大重构 / 架构级判断上 <code>claude-opus-4-8</code>，在会话里 <code>/model claude-opus-4-8</code> 一句话切换。</p>
+<h2>四、不封号规避清单</h2>
+<p>即便走了中转，几条底线还是建议守住，让你的使用彻底"无风险可查"：</p>
+<ol>
+<li><strong>不用破解 / 逆向工具。</strong> 任何声称"破解官方限制""白嫖 Pro"的工具，都在人为制造异常调用特征，别碰。</li>
+<li><strong>不共享、不转售账号。</strong> 一个 Key 自己用，别拉群拼车。共享池是封号重灾区，KingFlow 独立计费本就为了让你干净地用。</li>
+<li><strong>网络出口保持稳定。</strong> 走 KingFlow 已经不需要代理，但也别再叠一层机场去访问，避免制造无谓的异常链路。</li>
+<li><strong>遵守服务条款，不做自动化滥用。</strong> 别拿它去跑违反条款的批量爬取 / 刷量任务，正常写代码的强度完全没问题。</li>
+</ol>
+<p>守住这四条，加上中转架构本身绕开的三关，你基本就和"封号"这个词绝缘了。</p>
+<h2>五、FAQ</h2>
+<p><strong>Q1：走 KingFlow 中转，官方到底会不会封我？</strong>
+不会封"你"，因为你名下没有官方 Anthropic 账号。你持有的是 KingFlow 的 API Key，鉴权、转发、计费都在中转层完成，你本机不直连官方，风控无从触发。</p>
+<p><strong>Q2：我之前官方账号已经被封了，还能继续用 Claude Code 吗？</strong>
+能。官方账号封不封和 KingFlow 是两条独立的线。换成上面的 <code>settings.json</code> 配置，用 KingFlow 的 Key，照样跑最新的 <code>claude-opus-4-8</code> / <code>claude-sonnet-4-6</code>，不受历史封号影响。</p>
+<p><strong>Q3：不挂代理真的能连上吗，会不会又是一堆 403 / 429？</strong>
+能连，且不会。403 / 429 是官方对国内代理 IP 的拒绝，而 KingFlow 走国内节点正规转发，本机不出海、不切海外 IP，从源头上没有触发这些拒绝的条件，TTFT 通常 1-3 秒。</p>
+<p><strong>Q4：怎么用才最不容易出问题？</strong>
+守住第四节的四条：不破解、不共享、网络别乱叠、别搞自动化滥用。正常写代码、重构、修 bug 的日常强度，KingFlow 完全扛得住，也不会给你惹麻烦。</p>
+<hr />
+<p>想彻底告别封号提心吊胆，思路其实很简单：不去持有那个高风险的官方账号，改用 KingFlow 走官方协议正规中转直连——改一行 <code>ANTHROPIC_BASE_URL</code>，人民币按量，国内节点低延迟，从架构上绕开注册、网络、风控三关。端点 <code>https://www.kingflow.ai</code>，配置好就能安心把 Claude Code 当成终端里的全职 Agent 用起来。</p>
+</article>
+</main>
+<footer class="site-footer">
+  <p><strong>KingFlow</strong> · 国内直连、稳定低延迟的 Claude / GPT API 中转平台</p>
+  <p>官网：<a href="https://www.kingflow.ai" rel="noopener">www.kingflow.ai</a> ｜ 支持 Claude Code · OpenAI Codex · 全系 Claude / GPT 模型</p>
+  <p class="muted">© 2026 KingFlow. 本站为 KingFlow 中转方案与配置教程合集。</p>
+</footer>
+</body>
+</html>

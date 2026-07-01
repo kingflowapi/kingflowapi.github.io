@@ -81,6 +81,12 @@
       "nav": "Codex协议桥接排障",
       "title": "Codex Responses API桥接KingFlow·协议差异与排障清单 | KingFlow",
       "desc": "Codex 的 Responses API 与 OpenAI Chat Completions 差在哪？一张字段对照表讲清桥接层要转换什么，6 条排障清单定位 401/model_not_found/流式异常，接入 KingFlow。"
+    },
+    {
+      "slug": "claude-code-no-ban",
+      "nav": "Claude Code不封号",
+      "title": "Claude Code国内不封号用法·KingFlow合规直连中转 | KingFlow",
+      "desc": "Claude Code 官方直连为什么容易封号？KingFlow 走官方 /v1/messages 正规转发、国内节点不切海外 IP、不共享账号，配置 settings.json 即可，附封号规避清单。"
     }
   ]
 }
